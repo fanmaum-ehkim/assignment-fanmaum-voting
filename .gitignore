@@ -15,6 +15,11 @@ lerna-debug.log*
 # OS
 .DS_Store
 
+# docker-compose mysql
+/mysql_data
+/mysql_logs
+/mysql
+
 # Tests
 /coverage
 /.nyc_output
