@@ -20,6 +20,10 @@ lerna-debug.log*
 /mysql_logs
 /mysql
 
+# pnpm
+.pnpm-debug.log
+.pnpm-lock.yaml
+
 # Tests
 /coverage
 /.nyc_output
@@ -41,7 +45,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # dotenv environment variable files
-.env
+# .env
 .env.development.local
 .env.test.local
 .env.production.local
@@ -59,3 +63,5 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+/generated/prisma
