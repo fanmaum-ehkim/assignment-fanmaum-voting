@@ -14,10 +14,68 @@ datasource db {
 }
 
 model User {
-  id        BigInt    @id @default(autoincrement())
-  nickname  String    @unique @db.VarChar(30)
-  password  String
+  id       BigInt @id @default(autoincrement())
+  username String @unique @db.VarChar(64)
+  password String
+
   createdAt DateTime  @default(now()) @db.Timestamp(3)
   updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(3)
   deletedAt DateTime? @db.Timestamp(3)
+
+  VotingLog VotingLog[]
+}
+
+model Vote {
+  id        BigInt    @id @default(autoincrement())
+  title     String    @db.VarChar(100)
+  end       DateTime  @db.Timestamp(3)
+  createdAt DateTime  @default(now()) @db.Timestamp(3)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(3)
+  deletedAt DateTime? @db.Timestamp(3)
+
+  voteParticipatingStars VoteParticipatingStar[]
+  VotingLog              VotingLog[]
+}
+
+model Star {
+  id        BigInt    @id @default(autoincrement())
+  name      String    @db.VarChar(50)
+  createdAt DateTime  @default(now()) @db.Timestamp(3)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(3)
+  deletedAt DateTime? @db.Timestamp(3)
+
+  voteParticipatingStars VoteParticipatingStar[]
+  VotingLog              VotingLog[]
+}
+
+model VoteParticipatingStar {
+  id        BigInt    @id @default(autoincrement())
+  voteId    BigInt    @db.BigInt
+  starId    BigInt    @db.BigInt
+  quantity  Int       @default(0) @db.UnsignedInt
+  createdAt DateTime  @default(now()) @db.Timestamp(3)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(3)
+  deletedAt DateTime? @db.Timestamp(3)
+
+  vote      Vote        @relation(fields: [voteId], references: [id])
+  star      Star        @relation(fields: [starId], references: [id])
+  VotingLog VotingLog[]
+}
+
+model VotingLog {
+  id                      BigInt @id @default(autoincrement())
+  userId                  BigInt @db.BigInt
+  voteId                  BigInt @db.BigInt
+  starId                  BigInt @db.BigInt
+  voteParticipatingStarId BigInt @db.BigInt
+  quantity                Int    @db.UnsignedInt
+
+  createdAt DateTime  @default(now()) @db.Timestamp(3)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(3)
+  deletedAt DateTime? @db.Timestamp(3)
+
+  user                  User                  @relation(fields: [userId], references: [id])
+  vote                  Vote                  @relation(fields: [voteId], references: [id])
+  star                  Star                  @relation(fields: [starId], references: [id])
+  voteParticipatingStar VoteParticipatingStar @relation(fields: [voteParticipatingStarId], references: [id])
 }
