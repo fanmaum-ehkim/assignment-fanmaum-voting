@@ -5,9 +5,10 @@
 ## 평가 방법
 
 - 사전 필요 조건
-  - nodejs
+  - nodejs (v23)
   - npm
   - docker compose
+  - 3306 포트 이용가능
 
 ```sh
 # chmod +x ./scripts/assess.sh

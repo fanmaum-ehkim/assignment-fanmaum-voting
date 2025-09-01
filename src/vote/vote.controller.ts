@@ -20,7 +20,7 @@ export class VoteController {
   }
 
   @Post('add-star-to-vote')
-  @ApiOperation({ summary: '투표 캠페인에 있는 연예인 추가' })
+  @ApiOperation({ summary: '투표 캠페인에 연예인 후보자로 추가' })
   async addStar(
     @Query('voteId') voteId: number,
     @Query('starId') starId: number,
@@ -29,7 +29,7 @@ export class VoteController {
   }
 
   @Post('vote-to-star')
-  @ApiOperation({ summary: '투표 캠페인에 연예인 투표하기' })
+  @ApiOperation({ summary: '투표 캠페인에 연예인 후보자에게 투표하기' })
   async vote(
     @Query('userId') userId: bigint,
     @Query('voteId') voteId: bigint,
@@ -54,7 +54,7 @@ export class VoteController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: '투표 캠페인 상세 정보 및 후보(연예인) 목록 조회' })
+  @ApiOperation({ summary: '투표 캠페인 상세 정보 (연예인 후보자 목록 포함) 조회' })
   async getVoteDetail(@Param('id') voteId: bigint): Promise<VoteDetailDto> {
     return this.voteService.getVoteDetail(voteId);
   }

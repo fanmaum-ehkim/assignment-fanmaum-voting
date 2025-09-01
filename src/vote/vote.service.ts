@@ -45,7 +45,7 @@ export class VoteService {
         },
       });
 
-    // TODO: 마감 기한 종료된 투표인지 확인 처리 필요
+    // TODO: 마감 기한 종료된 투표인지 확인 처리 필요 (투표 가능상태 체크)
     //
 
     // TODO: Transaction 처리 필요

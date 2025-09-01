@@ -11,4 +11,4 @@ docker compose up -d
 
 npm install && \
 npm run build && \
-npm run start:prod
+npm run start:dev
