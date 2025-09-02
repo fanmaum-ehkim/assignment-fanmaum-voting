@@ -24,6 +24,7 @@ export async function setupApp(
     .setTitle('백엔드 구현 과제 eh.kim')
     .setDescription('팬마음 투표 페이지 백엔드 API 구현 과제')
     .setVersion('0.0')
+    .addBearerAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, documentFactory);
