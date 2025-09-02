@@ -1,10 +1,16 @@
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { AllExceptionsFilter } from './common/exception/all-exceptions.filter';
 
 export async function setupApp(
   app: NestExpressApplication,
 ): Promise<void> {
+
+  // TODO: filter, pipe 적용 순서 관련 문제 발생 가능성 검토
+  // filter
+  const httpAdapter = app.getHttpAdapter();
+  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
 
   // pipe
   app.useGlobalPipes(
@@ -21,4 +27,8 @@ export async function setupApp(
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, documentFactory);
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.info('Swagger URL: http://localhost:3000/swagger');
+  }
 }
