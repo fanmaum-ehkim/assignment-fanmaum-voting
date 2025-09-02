@@ -7,6 +7,7 @@ import { VoteDto } from './dto/vote.dto';
 import { Prisma, VoteParticipatingStar } from '@prisma/client';
 import { VoteDetailDto, VoteDetailStarDto } from './dto/vote-detail.dto';
 import { StarDto } from '../star/dto/star.dto';
+import { NotFoundException } from 'src/common/exception/not-found.exception';
 
 @Injectable()
 export class VoteService {
@@ -89,9 +90,16 @@ export class VoteService {
   }
 
   async getVoteDetail(voteId: bigint): Promise<VoteDetailDto> {
-    const vote = await this.prismaService.vote.findUniqueOrThrow({
+    // const vote = await this.prismaService.vote.findUniqueOrThrow({
+    //   where: { id: voteId },
+    // });
+    const vote = await this.prismaService.vote.findFirst({
       where: { id: voteId },
     });
+    if (!vote) {
+      throw new NotFoundException();
+    }
+    
     const voteParticipatingStars =
       await this.prismaService.voteParticipatingStar.findMany({
         where: { id: voteId },
