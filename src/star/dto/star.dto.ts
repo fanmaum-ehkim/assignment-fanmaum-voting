@@ -17,9 +17,9 @@ export class StarDto {
   updatedAt: Date;
 }
 
-export class StarFilterDto {
+export class StarNameFilterDto {
   @ApiProperty({
-    description: '이름',
+    description: '검색어 (이름)',
     required: false,
   })
   @IsOptional()

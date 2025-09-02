@@ -29,7 +29,7 @@ export class VoteController {
   }
 
   @Post('vote-to-star')
-  @ApiOperation({ summary: '투표 캠페인에 연예인 후보자에게 투표하기' })
+  @ApiOperation({ summary: '투표 캠페인의 연예인 후보자에게 투표하기' })
   async vote(
     @Query('userId') userId: bigint,
     @Query('voteId') voteId: bigint,

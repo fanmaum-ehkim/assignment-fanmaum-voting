@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateStarDto } from './dto/create-star.dto';
-import { StarDto, StarFilterDto } from './dto/star.dto';
+import { StarDto, StarNameFilterDto } from './dto/star.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class StarService {
 
   async getStars(
     pagination?: PaginationDto | null,
-    filter?: StarFilterDto,
+    filter?: StarNameFilterDto,
   ): Promise<StarDto[]> {
     const page = pagination?.page || 1;
     const size = pagination?.size || 10;
@@ -29,7 +29,7 @@ export class StarService {
     return stars;
   }
 
-  private buildStartWhereInput(filter?: StarFilterDto | null) {
+  private buildStartWhereInput(filter?: StarNameFilterDto | null) {
     return {
       ...(filter?.name && {
         name: {
