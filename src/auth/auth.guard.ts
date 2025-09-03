@@ -1,7 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
-import { ForbiddenException } from 'src/common/exception/forbidden.exception';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -20,7 +18,7 @@ export class AuthGuard implements CanActivate {
       }
 
       // jwt 토큰 검증
-      const payload = await this.authService.verifyJwtToken(token);
+      const payload = await this.authService.verifyAccessJwtToken(token);
       if (!payload) {
         throw new UnauthorizedException('Invalid token');
       }

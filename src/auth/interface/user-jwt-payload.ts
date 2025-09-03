@@ -1,4 +1,8 @@
-export interface UserJwtPayload {
-  id: bigint;
-  jti?: string;
+export interface UserAccessJwtPayload {
+  userId: bigint;
+}
+
+export interface UserRefreshJwtPayload {
+  userId: bigint;
+  jti: string;
 }
