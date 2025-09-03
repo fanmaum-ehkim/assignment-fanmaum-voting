@@ -26,16 +26,17 @@ model User {
   Session   Session[]
 }
 
-model Vote {
+model VoteCampaign {
   id        BigInt    @id @default(autoincrement())
   title     String    @db.VarChar(100)
-  end       DateTime  @db.Timestamp(3)
+  startTime DateTime  @db.Timestamp(3)
+  endTime   DateTime  @db.Timestamp(3)
   createdAt DateTime  @default(now()) @db.Timestamp(3)
   updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(3)
   deletedAt DateTime? @db.Timestamp(3)
 
-  voteParticipatingStars VoteParticipatingStar[]
-  VotingLog              VotingLog[]
+  voteCampaignCandidateStars VoteCampaignCandidateStar[]
+  VotingLog                  VotingLog[]
 }
 
 model Star {
@@ -45,11 +46,11 @@ model Star {
   updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(3)
   deletedAt DateTime? @db.Timestamp(3)
 
-  voteParticipatingStars VoteParticipatingStar[]
-  VotingLog              VotingLog[]
+  voteCampaignCandidateStar VoteCampaignCandidateStar[]
+  VotingLog                 VotingLog[]
 }
 
-model VoteParticipatingStar {
+model VoteCampaignCandidateStar {
   id        BigInt    @id @default(autoincrement())
   voteId    BigInt    @db.BigInt
   starId    BigInt    @db.BigInt
@@ -58,37 +59,39 @@ model VoteParticipatingStar {
   updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(3)
   deletedAt DateTime? @db.Timestamp(3)
 
-  vote      Vote        @relation(fields: [voteId], references: [id])
-  star      Star        @relation(fields: [starId], references: [id])
+  vote      VoteCampaign @relation(fields: [voteId], references: [id])
+  star      Star         @relation(fields: [starId], references: [id])
   VotingLog VotingLog[]
+
+  @@unique([voteId, starId]) // 투표 캠페인에 같은 연예인이 중복 등록 되는 것 방지
 }
 
 model VotingLog {
-  id                      BigInt @id @default(autoincrement())
-  userId                  BigInt @db.BigInt
-  voteId                  BigInt @db.BigInt
-  starId                  BigInt @db.BigInt
-  voteParticipatingStarId BigInt @db.BigInt
-  quantity                Int    @db.UnsignedInt
+  id                          BigInt @id @default(autoincrement())
+  userId                      BigInt @db.BigInt
+  voteId                      BigInt @db.BigInt
+  starId                      BigInt @db.BigInt
+  voteCampaignCandidateStarId BigInt @db.BigInt
+  quantity                    Int    @db.UnsignedInt
 
   createdAt DateTime  @default(now()) @db.Timestamp(3)
   updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(3)
   deletedAt DateTime? @db.Timestamp(3)
 
-  user                  User                  @relation(fields: [userId], references: [id])
-  vote                  Vote                  @relation(fields: [voteId], references: [id])
-  star                  Star                  @relation(fields: [starId], references: [id])
-  voteParticipatingStar VoteParticipatingStar @relation(fields: [voteParticipatingStarId], references: [id])
+  user                      User                      @relation(fields: [userId], references: [id])
+  vote                      VoteCampaign              @relation(fields: [voteId], references: [id])
+  star                      Star                      @relation(fields: [starId], references: [id])
+  voteCampaignCandidateStar VoteCampaignCandidateStar @relation(fields: [voteCampaignCandidateStarId], references: [id])
 }
 
 model Session {
-  id       BigInt @id @default(autoincrement())
-  userId   BigInt @db.BigInt
-  jti      String @db.VarChar(255)
+  id     BigInt @id @default(autoincrement())
+  userId BigInt @db.BigInt
+  jti    String @db.VarChar(255)
 
-  createdAt DateTime @default(now()) @db.Timestamp(3)
-  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(3)
+  createdAt DateTime  @default(now()) @db.Timestamp(3)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(3)
   deletedAt DateTime? @db.Timestamp(3)
 
-  user     User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }

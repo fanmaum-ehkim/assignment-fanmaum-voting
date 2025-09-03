@@ -8,7 +8,10 @@ export class VoteDto {
   title: string;
 
   @ApiProperty()
-  end: Date;
+  startTime: Date;
+
+  @ApiProperty()
+  endTime: Date;
 
   @ApiProperty()
   createdAt: Date;

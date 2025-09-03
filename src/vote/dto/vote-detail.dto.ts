@@ -8,7 +8,10 @@ export class VoteDetailDto {
   title: string;
 
   @ApiProperty()
-  end: Date;
+  startTime: Date;
+
+  @ApiProperty()
+  endTime: Date;
 
   @ApiProperty()
   stars: VoteDetailStarDto[];

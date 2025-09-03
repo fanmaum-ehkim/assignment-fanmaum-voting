@@ -4,7 +4,7 @@ import { CreateVoteDto } from './dto/create-vote.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { VoteFilterDto } from './dto/vote-filter.dto';
 import { VoteDto } from './dto/vote.dto';
-import { Prisma, VoteParticipatingStar } from '@prisma/client';
+import { Prisma, VoteCampaignCandidateStar } from '@prisma/client';
 import { VoteDetailDto, VoteDetailStarDto } from './dto/vote-detail.dto';
 import { StarDto } from '../star/dto/star.dto';
 import { NotFoundException } from 'src/common/exception/not-found.exception';
@@ -14,7 +14,7 @@ export class VoteService {
   constructor(private prismaService: PrismaService) {}
 
   async createVote(data: CreateVoteDto) {
-    return this.prismaService.vote.create({
+    return this.prismaService.voteCampaign.create({
       data,
     });
   }
@@ -22,8 +22,8 @@ export class VoteService {
   async addStar(
     voteId: number,
     starId: number,
-  ): Promise<VoteParticipatingStar> {
-    return this.prismaService.voteParticipatingStar.create({
+  ): Promise<VoteCampaignCandidateStar> {
+    return this.prismaService.voteCampaignCandidateStar.create({
       data: {
         voteId: voteId,
         starId: starId,
@@ -38,8 +38,8 @@ export class VoteService {
     quantity: number,
   ) {
     // 존재하는 투표 인지 체크
-    const voteParticipatingStar =
-      await this.prismaService.voteParticipatingStar.findFirstOrThrow({
+    const voteCampaignCandidateStar =
+      await this.prismaService.voteCampaignCandidateStar.findFirstOrThrow({
         where: {
           voteId: voteId,
           starId: starId,
@@ -51,12 +51,12 @@ export class VoteService {
 
     // TODO: Transaction 처리 필요
     // 표시용 필드 업데이트
-    await this.prismaService.voteParticipatingStar.update({
+    await this.prismaService.voteCampaignCandidateStar.update({
       where: {
-        id: voteParticipatingStar.id,
+        id: voteCampaignCandidateStar.id,
       },
       data: {
-        quantity: (voteParticipatingStar.quantity || 0) + quantity,
+        quantity: (voteCampaignCandidateStar.quantity || 0) + quantity,
       },
     });
 
@@ -64,9 +64,9 @@ export class VoteService {
     const votingLog = await this.prismaService.votingLog.create({
       data: {
         userId: userId,
-        voteId: voteParticipatingStar.voteId,
-        starId: voteParticipatingStar.starId,
-        voteParticipatingStarId: voteParticipatingStar.id,
+        voteId: voteCampaignCandidateStar.voteId,
+        starId: voteCampaignCandidateStar.starId,
+        voteCampaignCandidateStarId: voteCampaignCandidateStar.id,
         quantity: quantity,
       },
     });
@@ -81,7 +81,7 @@ export class VoteService {
     const page = pagination?.page || 1;
     const size = pagination?.size || 10;
 
-    const votes = await this.prismaService.vote.findMany({
+    const votes = await this.prismaService.voteCampaign.findMany({
       where: this.buildVoteWhereInput(filter),
       skip: (page - 1) * size,
       take: size,
@@ -93,7 +93,7 @@ export class VoteService {
     // const vote = await this.prismaService.vote.findUniqueOrThrow({
     //   where: { id: voteId },
     // });
-    const vote = await this.prismaService.vote.findFirst({
+    const vote = await this.prismaService.voteCampaign.findFirst({
       where: { id: voteId },
     });
     if (!vote) {
@@ -101,14 +101,15 @@ export class VoteService {
     }
     
     const voteParticipatingStars =
-      await this.prismaService.voteParticipatingStar.findMany({
+      await this.prismaService.voteCampaignCandidateStar.findMany({
         where: { id: voteId },
         include: { star: true },
       });
     const result: VoteDetailDto = {
       id: vote.id,
       title: vote.title,
-      end: vote.end,
+      startTime: vote.startTime,
+      endTime: vote.endTime,
       stars: voteParticipatingStars.map<VoteDetailStarDto>((star) => {
         return {
           id: star.star.id,
@@ -122,7 +123,7 @@ export class VoteService {
 
   private buildVoteWhereInput(
     filter?: VoteFilterDto | null,
-  ): Prisma.VoteWhereInput {
+  ): Prisma.VoteCampaignWhereInput {
     return {
       // TODO: end 필드가 오늘 시간으로 안 지났는지 확인 하는 쿼리르 변경
       // ...(filter?.status && {
