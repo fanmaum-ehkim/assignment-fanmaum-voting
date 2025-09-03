@@ -1,4 +1,4 @@
 export class CurrentUserDto {
-  id: number;
+  id: bigint;
   username: string;
 }

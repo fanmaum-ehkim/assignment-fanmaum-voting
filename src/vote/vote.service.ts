@@ -32,7 +32,7 @@ export class VoteService {
   }
 
   async voteByStarId(
-    userId: bigint | number,
+    userId: bigint,
     voteId: bigint,
     starId: bigint,
     quantity: number,
