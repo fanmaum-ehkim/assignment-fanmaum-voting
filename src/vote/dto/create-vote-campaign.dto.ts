@@ -1,6 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateVoteDto {
+export class CreateVoteCampaignDto {
   @ApiProperty()
   title: string;
 

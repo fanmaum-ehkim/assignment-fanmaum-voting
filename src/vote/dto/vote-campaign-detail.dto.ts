@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class VoteDetailDto {
+export class VoteCampaignDetailDto {
   @ApiProperty()
   id: bigint;
 
@@ -14,10 +14,10 @@ export class VoteDetailDto {
   endTime: Date;
 
   @ApiProperty()
-  stars: VoteDetailStarDto[];
+  stars: VoteCampaignDetailStarDto[];
 }
 
-export class VoteDetailStarDto {
+export class VoteCampaignDetailStarDto {
   @ApiProperty()
   id: bigint;
 

@@ -51,25 +51,25 @@ model Star {
 }
 
 model VoteCampaignCandidateStar {
-  id        BigInt    @id @default(autoincrement())
-  voteId    BigInt    @db.BigInt
-  starId    BigInt    @db.BigInt
-  quantity  Int       @default(0) @db.UnsignedInt
-  createdAt DateTime  @default(now()) @db.Timestamp(3)
-  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(3)
-  deletedAt DateTime? @db.Timestamp(3)
+  id             BigInt    @id @default(autoincrement())
+  voteCampaignId BigInt    @db.BigInt
+  starId         BigInt    @db.BigInt
+  quantity       Int       @default(0) @db.UnsignedInt
+  createdAt      DateTime  @default(now()) @db.Timestamp(3)
+  updatedAt      DateTime  @default(now()) @updatedAt @db.Timestamp(3)
+  deletedAt      DateTime? @db.Timestamp(3)
 
-  vote      VoteCampaign @relation(fields: [voteId], references: [id])
+  voteCampaign      VoteCampaign @relation(fields: [voteCampaignId], references: [id])
   star      Star         @relation(fields: [starId], references: [id])
   VotingLog VotingLog[]
 
-  @@unique([voteId, starId]) // 투표 캠페인에 같은 연예인이 중복 등록 되는 것 방지
+  @@unique([voteCampaignId, starId]) // 투표 캠페인에 같은 연예인이 중복 등록 되는 것 방지
 }
 
 model VotingLog {
   id                          BigInt @id @default(autoincrement())
   userId                      BigInt @db.BigInt
-  voteId                      BigInt @db.BigInt
+  voteCampaignId              BigInt @db.BigInt
   starId                      BigInt @db.BigInt
   voteCampaignCandidateStarId BigInt @db.BigInt
   quantity                    Int    @db.UnsignedInt
@@ -79,7 +79,7 @@ model VotingLog {
   deletedAt DateTime? @db.Timestamp(3)
 
   user                      User                      @relation(fields: [userId], references: [id])
-  vote                      VoteCampaign              @relation(fields: [voteId], references: [id])
+  voteCampaign                      VoteCampaign              @relation(fields: [voteCampaignId], references: [id])
   star                      Star                      @relation(fields: [starId], references: [id])
   voteCampaignCandidateStar VoteCampaignCandidateStar @relation(fields: [voteCampaignCandidateStarId], references: [id])
 }

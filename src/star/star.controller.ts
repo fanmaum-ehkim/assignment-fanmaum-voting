@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Query, Post } from '@nestjs/common';
 import { StarService } from './star.service';
-import { CreateStarDto } from './dto/create-star.dto';
-import { StarDto, StarNameFilterDto } from './dto/star.dto';
+import { CreateStarRequestDto } from './dto/create-star-request.dto';
+import { StarResponseDto, StarNameFilterDto } from './dto/star-response.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
@@ -12,9 +12,9 @@ export class StarController {
   @Post()
   @ApiOperation({ summary: '연예인 생성' })
   @ApiBearerAuth()
-  async createStar(@Body() data: CreateStarDto) {
-    await this.starService.createStar(data);
-    return { message: 'Star 생성 완료' };
+  async createStar(@Body() data: CreateStarRequestDto): Promise<StarResponseDto> {
+    const createdStar = await this.starService.createStar(data);
+    return createdStar;
   }
 
   @Get()
@@ -22,7 +22,7 @@ export class StarController {
   async getStars(
     @Query() pagination: PaginationDto,
     @Query() filter: StarNameFilterDto,
-  ): Promise<StarDto[]> {
+  ): Promise<StarResponseDto[]> {
     return this.starService.getStars(pagination, filter);
   }
 }

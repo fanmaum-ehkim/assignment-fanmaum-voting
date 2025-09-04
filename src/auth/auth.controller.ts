@@ -16,8 +16,8 @@ export class AuthController {
   async signin(@Body() signinDto: SigninDto): Promise<TokenResponseDto> {
     const user = await this.authService.validateUser(signinDto);
 
-    const accessToken = await this.authService.signAccessJwtTokenByUserId(user.id );
-    const refreshToken = await this.authService.signRefreshJwtTokenByUserId(user.id);
+    const accessToken = await this.authService.signAccessJwtTokenByUserId(user.userId );
+    const refreshToken = await this.authService.signRefreshJwtTokenByUserId(user.userId);
 
     return { accessToken, refreshToken };
   }

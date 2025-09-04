@@ -1,7 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Post, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserRequestDto } from './dto/create-user-request.dto';
 import { ApiOperation } from '@nestjs/swagger';
+import { CreateUserResponseDto } from './dto/create-user-response.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('user')
 export class UserController {
@@ -9,8 +11,11 @@ export class UserController {
 
   @Post()
   @ApiOperation({ summary: '유저 생성' })
-  async createUser(@Body() data: CreateUserDto) {
-    await this.userService.createUser(data);
-    return { message: 'User 생성 완료' };
+  @UseInterceptors(ClassSerializerInterceptor)
+  async createUser(
+    @Body() data: CreateUserRequestDto,
+  ): Promise<CreateUserResponseDto> {
+    const createdUser = await this.userService.createUser(data);
+    return plainToInstance(CreateUserResponseDto, createdUser);
   }
 }

@@ -12,6 +12,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ForbiddenException } from 'src/common/exception/forbidden.exception';
 import { CurrentUserDto } from './dto/current-user.dto';
 import { TokenResponseDto } from './dto/token-response.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -50,7 +51,7 @@ export class AuthService {
       throw new ForbiddenException();
     }
 
-    return user;
+    return plainToInstance(CurrentUserDto, { userId: user.id, ...user });
   }
 
   async signAccessJwtTokenByUserId(userId: bigint): Promise<string> {
