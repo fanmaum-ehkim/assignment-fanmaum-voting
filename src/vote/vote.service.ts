@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateVoteCampaignDto } from './dto/create-vote-campaign.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { VoteFilterDto } from './dto/vote-filter.dto';
-import { VoteCampaignDto } from './dto/vote-campaign-dto';
+import { VoteCampaignFilterInput } from './dto/vote-campaign-filter.input';
+import { VoteCampaignInput } from './dto/vote-campaign.input';
 import {
   Prisma,
   VoteCampaign,
@@ -27,8 +27,8 @@ export class VoteService {
   }
 
   async addStarToVoteCampaign(
-    voteCampaignId: number,
-    starId: number,
+    voteCampaignId: bigint,
+    starId: bigint,
   ): Promise<VoteCampaignCandidateStar> {
     return this.prismaService.voteCampaignCandidateStar.create({
       data: {
@@ -38,7 +38,7 @@ export class VoteService {
     });
   }
 
-  async findVoteCampaignByStarId(
+  async voteToVoteCampaign(
     userId: bigint,
     voteCampaignId: bigint,
     starId: bigint,
@@ -81,22 +81,24 @@ export class VoteService {
     return votingLog;
   }
 
-  async getVotes(
+  async getAllVoteCampaigns(
     pagination?: PaginationDto | null,
-    filter?: VoteFilterDto | null,
-  ): Promise<VoteCampaignDto[]> {
+    filter?: VoteCampaignFilterInput | null,
+  ): Promise<VoteCampaignInput[]> {
     const page = pagination?.page || 1;
     const size = pagination?.size || 10;
 
     const votes = await this.prismaService.voteCampaign.findMany({
-      where: this.buildVoteWhereInput(filter),
+      where: this.buildVoteCampaignWhereInput(filter),
       skip: (page - 1) * size,
       take: size,
     });
     return votes;
   }
 
-  async getVoteDetail(voteCampaignId: bigint): Promise<VoteCampaignDetailDto> {
+  async getVoteCampaignDetail(
+    voteCampaignId: bigint,
+  ): Promise<VoteCampaignDetailDto> {
     const vote = await this.prismaService.voteCampaign.findFirst({
       where: { id: voteCampaignId },
     });
@@ -104,7 +106,7 @@ export class VoteService {
       throw new NotFoundException();
     }
 
-    const voteParticipatingStars =
+    const voteCampaignCandidateStar =
       await this.prismaService.voteCampaignCandidateStar.findMany({
         where: { voteCampaignId: voteCampaignId },
         include: { star: true },
@@ -114,20 +116,22 @@ export class VoteService {
       title: vote.title,
       startTime: vote.startTime,
       endTime: vote.endTime,
-      stars: voteParticipatingStars.map<VoteCampaignDetailStarDto>((star) => {
-        return {
-          id: star.star.id,
-          name: star.star.name,
-          quantity: star.quantity,
-        };
-      }),
+      stars: voteCampaignCandidateStar.map<VoteCampaignDetailStarDto>(
+        (star) => {
+          return {
+            id: star.star.id,
+            name: star.star.name,
+            quantity: star.quantity,
+          };
+        },
+      ),
     };
 
     return result;
   }
 
-  private buildVoteWhereInput(
-    filter?: VoteFilterDto | null,
+  private buildVoteCampaignWhereInput(
+    filter?: VoteCampaignFilterInput | null,
   ): Prisma.VoteCampaignWhereInput {
     const now = new Date();
     return {

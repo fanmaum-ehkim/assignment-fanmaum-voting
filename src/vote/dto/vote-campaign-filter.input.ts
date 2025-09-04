@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { InputType, Field } from '@nestjs/graphql';
 import { IsBoolean, IsOptional, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
-export class VoteFilterDto {
+@InputType()
+export class VoteCampaignFilterInput {
   @ApiProperty({
     description: '상태: true-진행중, false-종료',
     required: false,
@@ -10,6 +12,7 @@ export class VoteFilterDto {
   })
   @IsOptional()
   @IsBoolean()
+  @Field(() => Boolean, { nullable: true })
   @Transform((value) => Boolean(value))
   status?: boolean;
 
@@ -19,5 +22,6 @@ export class VoteFilterDto {
   })
   @IsOptional()
   @IsString()
+  @Field(() => String, { nullable: true })
   search?: string;
 }

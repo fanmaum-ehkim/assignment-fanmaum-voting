@@ -1,0 +1,79 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  updateUser(input: UpdateUserInput!): User!
+  voteToVoteCampaign(input: VoteInput!): VotingLog!
+}
+
+input PaginationDto {
+  page: Float
+  size: Float
+}
+
+type Query {
+  getMyUserInfo: User!
+  getUserById(id: ID!): User!
+  getVoteCampaignDetail(id: ID!): VoteCampaignDetailDto!
+  getVoteCampaigns(filter: VoteCampaignFilterInput, pagination: PaginationDto): [VoteCampaignInput!]!
+}
+
+input UpdateUserInput {
+  username: String!
+}
+
+type User {
+  createdAt: DateTime!
+  id: ID!
+  username: String!
+}
+
+type VoteCampaignDetailDto {
+  endTime: DateTime!
+  id: ID!
+  stars: [VoteCampaignDetailStarDto!]!
+  startTime: DateTime!
+  title: String!
+}
+
+type VoteCampaignDetailStarDto {
+  id: ID!
+  name: String!
+  quantity: Float!
+}
+
+input VoteCampaignFilterInput {
+  search: String
+  status: Boolean
+}
+
+type VoteCampaignInput {
+  createdAt: DateTime!
+  endTime: DateTime!
+  id: ID!
+  startTime: DateTime!
+  title: String!
+  updatedAt: DateTime!
+}
+
+input VoteInput {
+  quantity: Float!
+  starId: ID!
+  voteCampaignId: ID!
+}
+
+type VotingLog {
+  createdAt: DateTime!
+  id: ID!
+  quantity: Float!
+  starId: ID!
+  updatedAt: DateTime!
+  userId: ID!
+  voteCampaignId: ID!
+}
