@@ -1,13 +1,17 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
+import { RequestContext } from 'src/request-context';
 import { CurrentUserDto } from '../dto/current-user.dto';
 
 export const CurrentUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext): CurrentUserDto | null | undefined => {
-    const request = ctx.switchToHttp().getRequest();
+  (data, ctx: GqlExecutionContext): CurrentUserDto | null | undefined => {
+    if (ctx.getType() === 'http') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return ctx.switchToHttp().getRequest().user;
+    } else if (ctx.getType() === 'graphql') {
+      return GqlExecutionContext.create(ctx).getContext<RequestContext>().user;
+    }
 
-    // TODO: ctx 에 user 가 없을 경우 (ex. 인증이 필요없는 API) null 반환하도록 처리
-    // TODO: 데코레이터 적용 순서 관련 문제 가능성 검토 (ex. AuthGuard -> CurrentUser)
-
-    return request.user;
+    return null;
   },
 );

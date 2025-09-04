@@ -1,8 +1,10 @@
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AllExceptionsFilter } from './common/exception/all-exceptions.filter';
 import expressBasicAuth from 'express-basic-auth';
+import { Request, Response, NextFunction } from 'express';
+import { AllExceptionsFilter } from './common/exception/all-exceptions.filter';
+import { RequestContext } from './request-context';
 
 export async function setupApp(
   app: NestExpressApplication,
@@ -19,6 +21,12 @@ export async function setupApp(
       transform: true,
     }),
   );
+
+  // custom request context
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    req.context = new RequestContext(req, res);
+    next();
+  });
 
   if (process.env.NODE_ENV !== 'production') {
     // 'express-basic-auth' for swagger
