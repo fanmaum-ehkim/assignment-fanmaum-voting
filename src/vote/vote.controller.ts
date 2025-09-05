@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { Post } from '@nestjs/common';
 import { VoteService } from './vote.service';
-import { CreateVoteCampaignDto } from './dto/request/create-vote-campaign.dto';
+import { CreateVoteCampaignInput } from './input/create-vote-campaign.input';
 import { VoteCampaignDto } from './dto/vote-campaign.dto';
 import { VoteCampaignFilterInput } from './input/vote-campaign-filter.input';
 import { PaginationDto } from '../common/dto/pagination.dto';
@@ -19,7 +19,7 @@ export class VoteController {
   @ApiOperation({ summary: '투표 캠페인 생성' })
   @ApiBearerAuth()
   async createVote(
-    @Body() data: CreateVoteCampaignDto,
+    @Body() data: CreateVoteCampaignInput,
   ): Promise<VoteCampaignDto> {
     return await this.voteService.createVoteCampaign(data);
   }

@@ -52,25 +52,4 @@ export class VoteCampaignResolver {
   ): Promise<VoteCampaignDto[]> {
     return this.voteService.getAllVoteCampaigns(pagination, filter);
   }
-
-  @Query(() => VoteCampaignDetailDto)
-  async getVoteCampaignDetail(
-    @Args('id', { type: () => ID }) id: string,
-  ): Promise<VoteCampaignDetailDto> {
-    return this.voteService.getVoteCampaignDetail(BigInt(id));
-  }
-
-  @Mutation(() => VotingLogDto)
-  @UseGuards(AuthGuard)
-  async voteToVoteCampaign(
-    @CurrentUser() currentUser: CurrentUserDto,
-    @Args('input') input: VoteInput,
-  ): Promise<VotingLogDto> {
-    return this.voteService.voteToVoteCampaign(
-      currentUser.userId,
-      BigInt(input.voteCampaignId),
-      BigInt(input.starId),
-      input.quantity,
-    );
-  }
 }

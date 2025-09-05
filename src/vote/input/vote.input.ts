@@ -1,13 +1,13 @@
-import { InputType, Field, ID } from '@nestjs/graphql';
+import { InputType, Field, Int } from '@nestjs/graphql';
 
-@InputType()
+@InputType('VoteInput')
 export class VoteInput {
-  @Field(() => ID)
+  @Field(() => String)
   voteCampaignId: string;
 
-  @Field(() => ID)
+  @Field(() => String)
   starId: string;
 
-  @Field()
+  @Field(() => Int)
   quantity: number;
 }

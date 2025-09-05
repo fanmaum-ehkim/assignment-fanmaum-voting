@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Field, InputType } from '@nestjs/graphql';
 
-@InputType()
-export class CreateVoteCampaignDto {
+@InputType('CreateVoteCampaignInput')
+export class CreateVoteCampaignInput {
   @ApiProperty()
   @Field()
   title: string;

@@ -9,12 +9,11 @@ scalar DateTime
 
 type Mutation {
   updateUser(input: UpdateUserInput!): User!
-  voteToVoteCampaign(input: VoteInput!): VotingLogDto!
 }
 
 input PaginationDto {
-  page: Float
-  size: Float
+  page: Int
+  size: Int
 }
 
 type Query {
@@ -22,8 +21,7 @@ type Query {
   getMyUserInfo: User!
   getMyVotingLogs: [VotingLogDto!]!
   getUserById(id: ID!): User!
-  getVoteCampaignDetail(id: ID!): VoteCampaignDetailDto!
-  getVoteCampaigns(filter: VoteCampaignFilterInput, pagination: PaginationDto): [VoteCampaignDto!]!
+  getVoteCampaigns(filter: VoteCampaignFilterInput, pagination: PaginationDto): [VoteCampaign!]!
 }
 
 type Star {
@@ -47,32 +45,7 @@ type User {
   votingLogs: [VotingLogDto!]!
 }
 
-type VoteCampaignCandidateStar {
-  createdAt: DateTime!
-  id: ID!
-  star: Star!
-  starId: String!
-  updatedAt: DateTime
-  voteCampaign: VoteCampaignDto!
-  voteCampaignId: String!
-  votingLogs: [VotingLogDto!]!
-}
-
-type VoteCampaignDetailDto {
-  endTime: DateTime!
-  id: ID!
-  stars: [VoteCampaignDetailStarDto!]!
-  startTime: DateTime!
-  title: String!
-}
-
-type VoteCampaignDetailStarDto {
-  id: ID!
-  name: String!
-  quantity: Float!
-}
-
-type VoteCampaignDto {
+type VoteCampaign {
   candidateStars: [VoteCampaignCandidateStar!]!
   createdAt: DateTime!
   endTime: DateTime!
@@ -83,15 +56,20 @@ type VoteCampaignDto {
   votingLogs: [VotingLogDto!]!
 }
 
+type VoteCampaignCandidateStar {
+  createdAt: DateTime!
+  id: ID!
+  star: Star!
+  starId: String!
+  updatedAt: DateTime
+  voteCampaign: VoteCampaign!
+  voteCampaignId: String!
+  votingLogs: [VotingLogDto!]!
+}
+
 input VoteCampaignFilterInput {
   search: String
   status: Boolean
-}
-
-input VoteInput {
-  quantity: Float!
-  starId: ID!
-  voteCampaignId: ID!
 }
 
 type VotingLogDto {
@@ -103,7 +81,7 @@ type VotingLogDto {
   updatedAt: DateTime!
   user: User!
   userId: String!
-  voteCampaign: VoteCampaignDto!
+  voteCampaign: VoteCampaign!
   voteCampaignCandidateStar: VoteCampaignCandidateStar!
   voteCampaignCandidateStarId: String!
   voteCampaignId: String!

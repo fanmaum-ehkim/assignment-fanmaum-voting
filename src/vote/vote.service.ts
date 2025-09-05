@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateVoteCampaignDto } from './dto/request/create-vote-campaign.dto';
+import { CreateVoteCampaignInput } from './input/create-vote-campaign.input';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { VoteCampaignFilterInput } from './input/vote-campaign-filter.input';
 import { VoteCampaignDto } from './dto/vote-campaign.dto';
@@ -20,7 +20,7 @@ import { NotFoundException } from 'src/common/exception/not-found.exception';
 export class VoteService {
   constructor(private prismaService: PrismaService) {}
 
-  async createVoteCampaign(data: CreateVoteCampaignDto): Promise<VoteCampaignDto> {
+  async createVoteCampaign(data: CreateVoteCampaignInput): Promise<VoteCampaignDto> {
     return this.prismaService.voteCampaign.create({
       data,
     });

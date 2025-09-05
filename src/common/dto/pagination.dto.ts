@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field, Int } from '@nestjs/graphql';
 import { Transform } from 'class-transformer';
 
 @InputType()
@@ -10,7 +10,7 @@ export class PaginationDto {
     type: Number,
   })
   @Transform(({ value }) => Number(value))
-  @Field(() => Number, { nullable: true })
+  @Field(() => Int, { nullable: true })
   page: number;
 
   @ApiProperty({
@@ -19,6 +19,6 @@ export class PaginationDto {
     type: Number,
   })
   @Transform(({ value }) => Number(value))
-  @Field(() => Number, { nullable: true })
+  @Field(() => Int, { nullable: true })
   size: number;
 }
