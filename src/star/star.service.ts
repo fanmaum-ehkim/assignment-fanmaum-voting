@@ -38,4 +38,22 @@ export class StarService {
       }),
     };
   }
+
+  async getVoteCampaignCandidatesByStarId(id: bigint) {
+    return this.prismaService.voteCampaignCandidateStar.findMany({
+      where: {
+        starId: id,
+      },
+    });
+  }
+
+  async getAllStars() {
+    return this.prismaService.star.findMany();
+  }
+
+  async getStarById(starId: bigint) {
+    return this.prismaService.star.findUniqueOrThrow({
+      where: { id: starId },
+    });
+  }
 }

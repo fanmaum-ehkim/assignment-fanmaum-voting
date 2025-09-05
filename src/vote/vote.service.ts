@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateVoteCampaignDto } from './dto/create-vote-campaign.dto';
+import { CreateVoteCampaignInput } from './input/create-vote-campaign.input';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { VoteFilterDto } from './dto/vote-filter.dto';
-import { VoteCampaignDto } from './dto/vote-campaign-dto';
+import { VoteCampaignFilterInput } from './input/vote-campaign-filter.input';
+import { VoteCampaignDto } from './dto/vote-campaign.dto';
 import {
   Prisma,
   VoteCampaign,
@@ -13,22 +13,22 @@ import {
 import {
   VoteCampaignDetailDto,
   VoteCampaignDetailStarDto,
-} from './dto/vote-campaign-detail.dto';
+} from './dto/response/vote-campaign-detail.dto';
 import { NotFoundException } from 'src/common/exception/not-found.exception';
 
 @Injectable()
 export class VoteService {
   constructor(private prismaService: PrismaService) {}
 
-  async createVoteCampaign(data: CreateVoteCampaignDto): Promise<VoteCampaign> {
+  async createVoteCampaign(data: CreateVoteCampaignInput): Promise<VoteCampaignDto> {
     return this.prismaService.voteCampaign.create({
       data,
     });
   }
 
   async addStarToVoteCampaign(
-    voteCampaignId: number,
-    starId: number,
+    voteCampaignId: bigint,
+    starId: bigint,
   ): Promise<VoteCampaignCandidateStar> {
     return this.prismaService.voteCampaignCandidateStar.create({
       data: {
@@ -38,7 +38,7 @@ export class VoteService {
     });
   }
 
-  async findVoteCampaignByStarId(
+  async voteToVoteCampaign(
     userId: bigint,
     voteCampaignId: bigint,
     starId: bigint,
@@ -81,22 +81,32 @@ export class VoteService {
     return votingLog;
   }
 
-  async getVotes(
+  async getVoteCampaigns(
     pagination?: PaginationDto | null,
-    filter?: VoteFilterDto | null,
+    filter?: VoteCampaignFilterInput | null,
   ): Promise<VoteCampaignDto[]> {
     const page = pagination?.page || 1;
     const size = pagination?.size || 10;
 
     const votes = await this.prismaService.voteCampaign.findMany({
-      where: this.buildVoteWhereInput(filter),
+      where: this.buildVoteCampaignWhereInput(filter),
       skip: (page - 1) * size,
       take: size,
     });
     return votes;
   }
 
-  async getVoteDetail(voteCampaignId: bigint): Promise<VoteCampaignDetailDto> {
+  async countVoteCampaigns(
+    filter?: VoteCampaignFilterInput | null,
+  ): Promise<number> {
+    return this.prismaService.voteCampaign.count({
+      where: this.buildVoteCampaignWhereInput(filter),
+    });
+  }
+
+  async getVoteCampaignDetail(
+    voteCampaignId: bigint,
+  ): Promise<VoteCampaignDetailDto> {
     const vote = await this.prismaService.voteCampaign.findFirst({
       where: { id: voteCampaignId },
     });
@@ -104,7 +114,7 @@ export class VoteService {
       throw new NotFoundException();
     }
 
-    const voteParticipatingStars =
+    const voteCampaignCandidateStar =
       await this.prismaService.voteCampaignCandidateStar.findMany({
         where: { voteCampaignId: voteCampaignId },
         include: { star: true },
@@ -114,20 +124,22 @@ export class VoteService {
       title: vote.title,
       startTime: vote.startTime,
       endTime: vote.endTime,
-      stars: voteParticipatingStars.map<VoteCampaignDetailStarDto>((star) => {
-        return {
-          id: star.star.id,
-          name: star.star.name,
-          quantity: star.quantity,
-        };
-      }),
+      stars: voteCampaignCandidateStar.map<VoteCampaignDetailStarDto>(
+        (star) => {
+          return {
+            id: star.star.id,
+            name: star.star.name,
+            quantity: star.quantity,
+          };
+        },
+      ),
     };
 
     return result;
   }
 
-  private buildVoteWhereInput(
-    filter?: VoteFilterDto | null,
+  private buildVoteCampaignWhereInput(
+    filter?: VoteCampaignFilterInput | null,
   ): Prisma.VoteCampaignWhereInput {
     const now = new Date();
     return {
@@ -142,5 +154,49 @@ export class VoteService {
         },
       }),
     };
+  }
+
+  async getVoteCampaignById(voteCampaignId: bigint): Promise<VoteCampaign> {
+    return this.prismaService.voteCampaign.findUniqueOrThrow({
+      where: { id: voteCampaignId },
+    });
+  }
+
+  async getVotingLogsByCampaignCandidateStarId(id: bigint) {
+    return this.prismaService.votingLog.findMany({
+      where: {
+        voteCampaignCandidateStarId: id,
+      },
+    });
+  }
+
+  async getVoteCampaignCandidateStarById(voteCampaignCandidateStarId: bigint) {
+    return this.prismaService.voteCampaignCandidateStar.findUniqueOrThrow({
+      where: { id: voteCampaignCandidateStarId },
+    });
+  }
+
+  async getVotingLogsByVoteCampaignId(id: bigint) {
+    return this.prismaService.votingLog.findMany({
+      where: {
+        voteCampaignId: id,
+      },
+    });
+  }
+
+  async getVoteCampaignCandidateStarsByVoteCampaignId(id: bigint) {
+    return this.prismaService.voteCampaignCandidateStar.findMany({
+      where: {
+        voteCampaignId: id,
+      },
+    });
+  }
+
+  async getVotingLogsByUserId(userId: bigint) {
+    return this.prismaService.votingLog.findMany({
+      where: {
+        userId: userId,
+      },
+    });
   }
 }

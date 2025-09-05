@@ -3,11 +3,23 @@ import { VoteService } from './vote.service';
 import { VoteController } from './vote.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { VoteCampaignResolver } from './resolver/vote-campaign.resolver';
+import { VotingLogResolver } from './resolver/voting-log.resolver';
+import { VoteCampaignCandidateStarResolver } from './resolver/vote-campaign-candidate-star.resolver';
+import { StarModule } from '../star/star.module';
+import { UserModule } from '../user/user.module';
+import { UserOffsetConnectionResolver } from './resolver/vote-campaign-offset-connection.resolver';
 
 @Module({
-  imports: [PrismaModule, AuthModule],
+  imports: [PrismaModule, AuthModule, UserModule, StarModule],
   controllers: [VoteController],
-  providers: [VoteService],
+  providers: [
+    VoteService,
+    VoteCampaignResolver,
+    VotingLogResolver,
+    VoteCampaignCandidateStarResolver,
+    UserOffsetConnectionResolver,
+  ],
   exports: [VoteService],
 })
 export class VoteModule {}

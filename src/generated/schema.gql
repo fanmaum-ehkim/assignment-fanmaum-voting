@@ -1,0 +1,94 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  updateUser(input: UpdateUserInput!): User!
+}
+
+input PaginationDto {
+  page: Int
+  size: Int
+}
+
+type Query {
+  getAllStars: [Star!]!
+  getMyUserInfo: User!
+  getMyVotingLogs: [VotingLogDto!]!
+  getUserById(id: ID!): User!
+  getVoteCampaigns(filter: VoteCampaignFilterInput, pagination: PaginationDto): [VoteCampaign!]!
+  getVoteCampaignsWithOffsetPagination(filter: VoteCampaignFilterInput, pagination: PaginationDto): VoteCampaignOffsetConnection!
+}
+
+type Star {
+  createdAt: DateTime!
+  id: ID!
+  name: String!
+  updatedAt: DateTime!
+  voteCampaignCandidates: [VoteCampaignCandidateStar!]!
+}
+
+input UpdateUserInput {
+  username: String!
+}
+
+type User {
+  createdAt: DateTime!
+  deletedAt: DateTime
+  id: ID!
+  updatedAt: DateTime!
+  username: String!
+  votingLogs: [VotingLogDto!]!
+}
+
+type VoteCampaign {
+  candidateStars: [VoteCampaignCandidateStar!]!
+  createdAt: DateTime!
+  endTime: DateTime!
+  id: ID!
+  startTime: DateTime!
+  title: String!
+  updatedAt: DateTime!
+  votingLogs: [VotingLogDto!]!
+}
+
+type VoteCampaignCandidateStar {
+  createdAt: DateTime!
+  id: ID!
+  star: Star!
+  starId: String!
+  updatedAt: DateTime
+  voteCampaign: VoteCampaign!
+  voteCampaignId: String!
+  votingLogs: [VotingLogDto!]!
+}
+
+input VoteCampaignFilterInput {
+  search: String
+  status: Boolean
+}
+
+type VoteCampaignOffsetConnection {
+  nodes: [VoteCampaign!]!
+  totalCount: Float!
+}
+
+type VotingLogDto {
+  createdAt: DateTime!
+  id: ID!
+  quantity: Int!
+  star: Star!
+  starId: String!
+  updatedAt: DateTime!
+  user: User!
+  userId: String!
+  voteCampaign: VoteCampaign!
+  voteCampaignCandidateStar: VoteCampaignCandidateStar!
+  voteCampaignCandidateStarId: String!
+  voteCampaignId: String!
+}

@@ -1,13 +1,14 @@
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AllExceptionsFilter } from './common/exception/all-exceptions.filter';
 import expressBasicAuth from 'express-basic-auth';
+import { Request, Response, NextFunction } from 'express';
+import { AllExceptionsFilter } from './common/exception/all-exceptions.filter';
+import { RequestContext } from './request-context';
 
 export async function setupApp(
   app: NestExpressApplication,
 ): Promise<void> {
-
   // TODO: filter, pipe 적용 순서 관련 문제 발생 가능성 검토
   // filter
   const httpAdapter = app.getHttpAdapter();
@@ -19,6 +20,12 @@ export async function setupApp(
       transform: true,
     }),
   );
+
+  // custom request context
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    req.context = new RequestContext(req, res);
+    next();
+  });
 
   if (process.env.NODE_ENV !== 'production') {
     // 'express-basic-auth' for swagger
@@ -35,7 +42,6 @@ export async function setupApp(
       }),
     );
 
-
     // swagger
     const config = new DocumentBuilder()
       .setTitle('백엔드 구현 과제 eh.kim')
@@ -46,5 +52,18 @@ export async function setupApp(
     const documentFactory = () => SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('swagger', app, documentFactory);
     console.info('Swagger URL: http://localhost:3000/swagger');
+
+    // apollo studio
+    app.enableCors({
+      credentials: true,
+      allowedHeaders:
+        'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+      exposedHeaders: 'Authorization',
+      origin: [
+        'http://localhost:3000',
+        'http://127.0.0.1',
+        'https://studio.apollographql.com',
+      ],
+    });
   }
 }

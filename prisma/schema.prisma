@@ -22,8 +22,8 @@ model User {
   updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(3)
   deletedAt DateTime? @db.Timestamp(3)
 
-  VotingLog VotingLog[]
-  Session   Session[]
+  votingLogs VotingLog[]
+  session    Session[]
 }
 
 model VoteCampaign {
@@ -36,7 +36,7 @@ model VoteCampaign {
   deletedAt DateTime? @db.Timestamp(3)
 
   voteCampaignCandidateStars VoteCampaignCandidateStar[]
-  VotingLog                  VotingLog[]
+  votingLogs                 VotingLog[]
 }
 
 model Star {
@@ -47,7 +47,7 @@ model Star {
   deletedAt DateTime? @db.Timestamp(3)
 
   voteCampaignCandidateStar VoteCampaignCandidateStar[]
-  VotingLog                 VotingLog[]
+  votingLogs                VotingLog[]
 }
 
 model VoteCampaignCandidateStar {
@@ -59,9 +59,9 @@ model VoteCampaignCandidateStar {
   updatedAt      DateTime  @default(now()) @updatedAt @db.Timestamp(3)
   deletedAt      DateTime? @db.Timestamp(3)
 
-  voteCampaign      VoteCampaign @relation(fields: [voteCampaignId], references: [id])
-  star      Star         @relation(fields: [starId], references: [id])
-  VotingLog VotingLog[]
+  voteCampaign VoteCampaign @relation(fields: [voteCampaignId], references: [id])
+  star         Star         @relation(fields: [starId], references: [id])
+  votingLogs   VotingLog[]
 
   @@unique([voteCampaignId, starId]) // 투표 캠페인에 같은 연예인이 중복 등록 되는 것 방지
 }
@@ -79,7 +79,7 @@ model VotingLog {
   deletedAt DateTime? @db.Timestamp(3)
 
   user                      User                      @relation(fields: [userId], references: [id])
-  voteCampaign                      VoteCampaign              @relation(fields: [voteCampaignId], references: [id])
+  voteCampaign              VoteCampaign              @relation(fields: [voteCampaignId], references: [id])
   star                      Star                      @relation(fields: [starId], references: [id])
   voteCampaignCandidateStar VoteCampaignCandidateStar @relation(fields: [voteCampaignCandidateStarId], references: [id])
 }

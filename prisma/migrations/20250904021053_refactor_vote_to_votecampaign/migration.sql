@@ -1,12 +1,12 @@
 /*
   Warnings:
 
-  - You are about to drop the column `voteId` on the `VotingLog` table. All the data in the column will be lost.
-  - You are about to drop the column `voteParticipatingStarId` on the `VotingLog` table. All the data in the column will be lost.
+  - You are about to drop the column `voteId` on the `VotingLogDto` table. All the data in the column will be lost.
+  - You are about to drop the column `voteParticipatingStarId` on the `VotingLogDto` table. All the data in the column will be lost.
   - You are about to drop the `Vote` table. If the table is not empty, all the data it contains will be lost.
   - You are about to drop the `VoteParticipatingStar` table. If the table is not empty, all the data it contains will be lost.
-  - Added the required column `voteCampaignCandidateStarId` to the `VotingLog` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `voteCampaignId` to the `VotingLog` table without a default value. This is not possible if the table is not empty.
+  - Added the required column `voteCampaignCandidateStarId` to the `VotingLogDto` table without a default value. This is not possible if the table is not empty.
+  - Added the required column `voteCampaignId` to the `VotingLogDto` table without a default value. This is not possible if the table is not empty.
 
 */
 -- DropForeignKey
@@ -20,12 +20,6 @@ ALTER TABLE `VotingLog` DROP FOREIGN KEY `VotingLog_voteId_fkey`;
 
 -- DropForeignKey
 ALTER TABLE `VotingLog` DROP FOREIGN KEY `VotingLog_voteParticipatingStarId_fkey`;
-
--- DropIndex
-DROP INDEX `VotingLog_voteId_fkey` ON `VotingLog`;
-
--- DropIndex
-DROP INDEX `VotingLog_voteParticipatingStarId_fkey` ON `VotingLog`;
 
 -- AlterTable
 ALTER TABLE `VotingLog` DROP COLUMN `voteId`,
