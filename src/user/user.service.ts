@@ -5,6 +5,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { CreateUserResponseDto } from './dto/create-user-response.dto';
 import { User } from '@prisma/client';
 import { UpdateUserInput } from './dto/update-user.input';
+import { VotingLogDto } from '../vote/dto/voting-log.dto';
 
 @Injectable()
 export class UserService {
@@ -37,6 +38,16 @@ export class UserService {
       data: {
         ...input,
       },
+    });
+  }
+
+  async getVotingLogsByUserId(userId: bigint): Promise<VotingLogDto[]> {
+    return await this.prismaService.votingLog.findMany({
+      where: {
+        userId,
+        deletedAt: null,
+      },
+      orderBy: { createdAt: 'desc' },
     });
   }
 }

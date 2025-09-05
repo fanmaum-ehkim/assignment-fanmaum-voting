@@ -1,12 +1,12 @@
 import { Body, Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { Post } from '@nestjs/common';
 import { VoteService } from './vote.service';
-import { CreateVoteCampaignDto } from './dto/create-vote-campaign.dto';
-import { VoteCampaignInput } from './dto/vote-campaign.input';
-import { VoteCampaignFilterInput } from './dto/vote-campaign-filter.input';
+import { CreateVoteCampaignDto } from './dto/request/create-vote-campaign.dto';
+import { VoteCampaignDto } from './dto/vote-campaign.dto';
+import { VoteCampaignFilterInput } from './input/vote-campaign-filter.input';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { VoteCampaignDetailDto } from './dto/vote-campaign-detail.dto';
+import { VoteCampaignDetailDto } from './dto/response/vote-campaign-detail.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CurrentUser } from 'src/auth/decorator/user.decorator';
 import { CurrentUserDto } from 'src/auth/dto/current-user.dto';
@@ -20,7 +20,7 @@ export class VoteController {
   @ApiBearerAuth()
   async createVote(
     @Body() data: CreateVoteCampaignDto,
-  ): Promise<VoteCampaignInput> {
+  ): Promise<VoteCampaignDto> {
     return await this.voteService.createVoteCampaign(data);
   }
 
@@ -57,7 +57,7 @@ export class VoteController {
   async getVoteCampaigns(
     @Query() pagination: PaginationDto,
     @Query() filter: VoteCampaignFilterInput,
-  ): Promise<VoteCampaignInput[]> {
+  ): Promise<VoteCampaignDto[]> {
     return this.voteService.getAllVoteCampaigns(pagination, filter);
   }
 

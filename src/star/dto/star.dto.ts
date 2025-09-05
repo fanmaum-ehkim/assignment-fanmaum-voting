@@ -1,18 +1,15 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
-@ObjectType('User')
-export class UserDto {
+@ObjectType('Star')
+export class StarDto {
   id: bigint;
 
   @Field(() => String)
-  username: string;
+  name: string;
 
   @Field(() => Date)
   createdAt: Date;
 
   @Field(() => Date)
   updatedAt: Date;
-
-  @Field(() => Date, { nullable: true })
-  deletedAt: Date | null;
 }

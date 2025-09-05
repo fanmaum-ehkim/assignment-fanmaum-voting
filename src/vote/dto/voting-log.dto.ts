@@ -1,20 +1,18 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 
-@ObjectType('VotingLog')
+@ObjectType('VotingLogDto')
 export class VotingLogDto {
-  @Field(() => ID)
   id: bigint;
 
-  @Field(() => ID)
   userId: bigint;
 
-  @Field(() => ID)
   voteCampaignId: bigint;
 
-  @Field(() => ID)
   starId: bigint;
 
-  @Field(() => Number)
+  voteCampaignCandidateStarId: bigint;
+
+  @Field(() => Int)
   quantity: number;
 
   @Field(() => Date)

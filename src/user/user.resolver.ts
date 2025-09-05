@@ -14,6 +14,7 @@ import { CurrentUserDto } from 'src/auth/dto/current-user.dto';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserInput } from './dto/update-user.input';
+import { VotingLogDto } from 'src/vote/dto/voting-log.dto';
 
 @Resolver(() => UserDto)
 export class UserResolver {
@@ -24,9 +25,9 @@ export class UserResolver {
     return parent.id.toString();
   }
 
-  @ResolveField(() => String)
-  username(@Parent() parent: UserDto): string {
-    return parent.username;
+  @ResolveField(() => [VotingLogDto])
+  async votingLogs(@Parent() parent: UserDto): Promise<VotingLogDto[]> {
+    return await this.userService.getVotingLogsByUserId(parent.id);
   }
 
   @Query(() => UserDto)

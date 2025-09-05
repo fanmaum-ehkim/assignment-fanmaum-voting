@@ -9,7 +9,7 @@ scalar DateTime
 
 type Mutation {
   updateUser(input: UpdateUserInput!): User!
-  voteToVoteCampaign(input: VoteInput!): VotingLog!
+  voteToVoteCampaign(input: VoteInput!): VotingLogDto!
 }
 
 input PaginationDto {
@@ -18,10 +18,20 @@ input PaginationDto {
 }
 
 type Query {
+  getAllStars: [Star!]!
   getMyUserInfo: User!
+  getMyVotingLogs: [VotingLogDto!]!
   getUserById(id: ID!): User!
   getVoteCampaignDetail(id: ID!): VoteCampaignDetailDto!
-  getVoteCampaigns(filter: VoteCampaignFilterInput, pagination: PaginationDto): [VoteCampaignInput!]!
+  getVoteCampaigns(filter: VoteCampaignFilterInput, pagination: PaginationDto): [VoteCampaignDto!]!
+}
+
+type Star {
+  createdAt: DateTime!
+  id: ID!
+  name: String!
+  updatedAt: DateTime!
+  voteCampaignCandidates: [VoteCampaignCandidateStar!]!
 }
 
 input UpdateUserInput {
@@ -30,8 +40,22 @@ input UpdateUserInput {
 
 type User {
   createdAt: DateTime!
+  deletedAt: DateTime
   id: ID!
+  updatedAt: DateTime!
   username: String!
+  votingLogs: [VotingLogDto!]!
+}
+
+type VoteCampaignCandidateStar {
+  createdAt: DateTime!
+  id: ID!
+  star: Star!
+  starId: String!
+  updatedAt: DateTime
+  voteCampaign: VoteCampaignDto!
+  voteCampaignId: String!
+  votingLogs: [VotingLogDto!]!
 }
 
 type VoteCampaignDetailDto {
@@ -48,18 +72,20 @@ type VoteCampaignDetailStarDto {
   quantity: Float!
 }
 
-input VoteCampaignFilterInput {
-  search: String
-  status: Boolean
-}
-
-type VoteCampaignInput {
+type VoteCampaignDto {
+  candidateStars: [VoteCampaignCandidateStar!]!
   createdAt: DateTime!
   endTime: DateTime!
   id: ID!
   startTime: DateTime!
   title: String!
   updatedAt: DateTime!
+  votingLogs: [VotingLogDto!]!
+}
+
+input VoteCampaignFilterInput {
+  search: String
+  status: Boolean
 }
 
 input VoteInput {
@@ -68,12 +94,17 @@ input VoteInput {
   voteCampaignId: ID!
 }
 
-type VotingLog {
+type VotingLogDto {
   createdAt: DateTime!
   id: ID!
-  quantity: Float!
-  starId: ID!
+  quantity: Int!
+  star: Star!
+  starId: String!
   updatedAt: DateTime!
-  userId: ID!
-  voteCampaignId: ID!
+  user: User!
+  userId: String!
+  voteCampaign: VoteCampaignDto!
+  voteCampaignCandidateStar: VoteCampaignCandidateStar!
+  voteCampaignCandidateStarId: String!
+  voteCampaignId: String!
 }

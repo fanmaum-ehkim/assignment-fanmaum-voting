@@ -1,10 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class VoteCampaignInput {
+export class VoteCampaignDto {
   @ApiProperty()
-  @Field(() => ID)
   id: bigint;
 
   @ApiProperty()
