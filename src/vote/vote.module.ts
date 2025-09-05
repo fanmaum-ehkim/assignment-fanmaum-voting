@@ -8,6 +8,7 @@ import { VotingLogResolver } from './resolver/voting-log.resolver';
 import { VoteCampaignCandidateStarResolver } from './resolver/vote-campaign-candidate-star.resolver';
 import { StarModule } from '../star/star.module';
 import { UserModule } from '../user/user.module';
+import { UserOffsetConnectionResolver } from './resolver/vote-campaign-offset-connection.resolver';
 
 @Module({
   imports: [PrismaModule, AuthModule, UserModule, StarModule],
@@ -17,6 +18,7 @@ import { UserModule } from '../user/user.module';
     VoteCampaignResolver,
     VotingLogResolver,
     VoteCampaignCandidateStarResolver,
+    UserOffsetConnectionResolver,
   ],
   exports: [VoteService],
 })

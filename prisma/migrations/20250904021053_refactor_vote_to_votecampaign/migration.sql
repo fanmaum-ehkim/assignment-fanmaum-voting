@@ -21,12 +21,6 @@ ALTER TABLE `VotingLog` DROP FOREIGN KEY `VotingLog_voteId_fkey`;
 -- DropForeignKey
 ALTER TABLE `VotingLog` DROP FOREIGN KEY `VotingLog_voteParticipatingStarId_fkey`;
 
--- DropIndex
-DROP INDEX `VotingLog_voteId_fkey` ON `VotingLogDto`;
-
--- DropIndex
-DROP INDEX `VotingLog_voteParticipatingStarId_fkey` ON `VotingLogDto`;
-
 -- AlterTable
 ALTER TABLE `VotingLog` DROP COLUMN `voteId`,
     DROP COLUMN `voteParticipatingStarId`,

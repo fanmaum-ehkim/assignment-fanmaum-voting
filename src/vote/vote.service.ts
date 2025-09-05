@@ -81,7 +81,7 @@ export class VoteService {
     return votingLog;
   }
 
-  async getAllVoteCampaigns(
+  async getVoteCampaigns(
     pagination?: PaginationDto | null,
     filter?: VoteCampaignFilterInput | null,
   ): Promise<VoteCampaignDto[]> {
@@ -94,6 +94,14 @@ export class VoteService {
       take: size,
     });
     return votes;
+  }
+
+  async countVoteCampaigns(
+    filter?: VoteCampaignFilterInput | null,
+  ): Promise<number> {
+    return this.prismaService.voteCampaign.count({
+      where: this.buildVoteCampaignWhereInput(filter),
+    });
   }
 
   async getVoteCampaignDetail(

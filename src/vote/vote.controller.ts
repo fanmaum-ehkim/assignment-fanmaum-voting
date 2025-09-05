@@ -58,7 +58,7 @@ export class VoteController {
     @Query() pagination: PaginationDto,
     @Query() filter: VoteCampaignFilterInput,
   ): Promise<VoteCampaignDto[]> {
-    return this.voteService.getAllVoteCampaigns(pagination, filter);
+    return this.voteService.getVoteCampaigns(pagination, filter);
   }
 
   @Get(':id')

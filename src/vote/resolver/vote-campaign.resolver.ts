@@ -1,24 +1,18 @@
 import {
   Resolver,
   Query,
-  Mutation,
   Args,
   ID,
   Parent,
   ResolveField,
 } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
 import { VoteService } from '../vote.service';
 import { VoteCampaignDto } from '../dto/vote-campaign.dto';
-import { VoteCampaignDetailDto } from '../dto/response/vote-campaign-detail.dto';
 import { VoteCampaignFilterInput } from '../input/vote-campaign-filter.input';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 import { VotingLogDto } from '../dto/voting-log.dto';
-import { VoteInput } from '../input/vote.input';
-import { AuthGuard } from '../../auth/auth.guard';
-import { CurrentUser } from '../../auth/decorator/user.decorator';
-import { CurrentUserDto } from '../../auth/dto/current-user.dto';
 import { VoteCampaignCandidateStarDto } from '../dto/vote-campaign-candidate-star.dto';
+import { VoteCampaignOffsetConnection } from '../connection/vote-campaign-offset.connection';
 
 @Resolver(() => VoteCampaignDto)
 export class VoteCampaignResolver {
@@ -50,6 +44,19 @@ export class VoteCampaignResolver {
     @Args('filter', { type: () => VoteCampaignFilterInput, nullable: true })
     filter?: VoteCampaignFilterInput,
   ): Promise<VoteCampaignDto[]> {
-    return this.voteService.getAllVoteCampaigns(pagination, filter);
+    return this.voteService.getVoteCampaigns(pagination, filter);
+  }
+
+  @Query(() => VoteCampaignOffsetConnection)
+  async getVoteCampaignsWithOffsetPagination(
+    @Args('pagination', { type: () => PaginationDto, nullable: true })
+    pagination?: PaginationDto,
+    @Args('filter', { type: () => VoteCampaignFilterInput, nullable: true })
+    filter?: VoteCampaignFilterInput,
+  ): Promise<VoteCampaignOffsetConnection> {
+    return {
+      getNodes: () => this.voteService.getVoteCampaigns(pagination, filter),
+      getTotalCount: () => this.voteService.countVoteCampaigns(filter),
+    };
   }
 }
